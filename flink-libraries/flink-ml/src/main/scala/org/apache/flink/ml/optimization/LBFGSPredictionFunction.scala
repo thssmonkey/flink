@@ -18,6 +18,22 @@
 
 package org.apache.flink.ml.optimization
 
-class Ab {
+import org.apache.flink.ml.math.{BLAS, Vector}
 
+/** An abstract class for prediction functions to be used in optimization **/
+abstract class LBFGSPredictionFunction extends Serializable {
+  def predict(features: Vector, weights: Vector): Double
+
+  def gradient(features: Vector, weights: Vector): Vector
+}
+
+/** A linear prediction function **/
+object LinearPrediction extends LBFGSPredictionFunction {
+  override def predict(features: Vector, weightVector: Vector): Double = {
+    BLAS.dot(features, weightVector)
+  }
+
+  override def gradient(features: Vector, weights: Vector): Vector = {
+    features.copy
+  }
 }
